@@ -3,8 +3,43 @@
   <head>
     <meta charset="utf-8">
     <title>mpe-modular</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   </head>
   <body>
-    
+
+    <canvas id="viewport"></canvas>
+
+    <aside id="settings-panel">
+      <div id="default">
+        <h1>mpe modular</h1>
+        <section>
+          <div class="left">polyphony:</div>
+          <div class="settings-number right">
+            <input id="polyphony" type="number" value="1" min="0" max="10">
+          </div>
+        </section>
+      </div>
+      <div id="dynamic">
+
+      </div>
+    </aside>
+
+    <div id="fullscreen-wrapper">
+      <div id="fullscreen"></div>
+    </div>
+    <div id="oscilloscope"></div>
+
+    <script src="custom.js"></script>
+    <script src="bower_components/fabric.js/dist/fabric.min.js"></script>
+    <script src="constant-source-node.min.js"></script>
+    <script>ConstantSourceNode.polyfill();</script>
+    <script src="wavy-jones.js"></script>
+    <script src="connections.js"></script>
+    <script src="nodes.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>

@@ -1,0 +1,178 @@
+html {
+  margin: 0;
+  padding: 0;
+
+  font: 150% 'Raleway', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000000;
+  color: rgb(209, 210, 230);
+}
+
+#fullscreen-wrapper {
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  width: 80vw;
+  height: 100vh;
+  color: rgba(107, 210, 255, 0.41);
+  font-size: 4rem;
+  font-weight: 200;
+  text-align: center;
+
+  display: block;
+  position: absolute;
+
+  pointer-events: none;
+
+  z-index: 100000;
+}
+
+#fullscreen {
+  width: auto;
+  height: 8ch;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+
+  position: absolute;
+
+  pointer-events: none;
+}
+
+#oscilloscope {
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+canvas {
+  margin: 0;
+  padding: 0;
+  width: 80vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  position: absolute;
+}
+
+#settings-panel {
+  margin: 0;
+  padding: 0 1rem 0 1rem;
+  width: calc(20vw - 2rem);
+  height: 100vh;
+  background-color: rgba(196, 196, 196, 0.63);
+  color: black;
+  left: 80vw;
+  top: 0;
+  position: absolute;
+}
+
+#settings-panel h1 {
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+  text-align: center;
+}
+
+#settings-panel h2 {
+  font-size: 1rem;
+  font-weight: 100;
+  color: rgb(232, 232, 232);
+}
+
+#settings-panel div {
+  margin: 0;
+  padding: 0;
+}
+
+#settings-panel div section {
+  margin: 1rem 0;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+#settings-panel div section.center {
+  text-align: center;
+}
+
+#settings-panel div section div {
+  height: 1.2rem;
+}
+
+#settings-panel div section .left {
+  width: 7rem;
+  float: left;
+}
+
+#settings-panel div section .right {
+  overflow: hidden;
+  text-align: right;
+}
+
+#settings-panel input, #settings-panel button, #settings-panel select {
+  font: 1rem "Raleway", sans-serif;
+
+  color: rgb(255, 255, 255);
+  background-color: rgb(101, 101, 101);
+
+  border: none;
+  border-radius: 7px;
+
+  height: inherit;
+
+  display: inline-block;
+}
+
+#settings-panel input:focus,
+#settings-panel select:focus {
+  background-color: rgb(24, 37, 75) !important;
+}
+
+#settings-panel button {
+  padding: 0.3rem;
+  min-width: 8rem;
+}
+
+#settings-panel button:hover {
+  background-color: rgb(61, 61, 61);
+}
+
+#settings-panel button:active {
+  background-color: rgb(81, 88, 187);
+}
+
+#settings-panel select {
+  min-width: 8rem;
+}
+
+#settings-panel .settings-number input {
+  width: 7ch;
+  text-align: center;
+}
+
+#settings-panel #object-name {
+  font: 1.6rem "Raleway", sans-serif;
+  font-weight: 600;
+  color: rgb(198, 238, 255);
+  background-color: rgb(73, 73, 73);
+  margin: 1.2rem 0;
+  width: 14ch;
+  max-width: calc(20vw - 2rem);
+  text-align: center;
+}
