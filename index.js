@@ -248,11 +248,10 @@ let World = {
         settingsPanelDynamic.append();
       }
 
+      let self = this;
       // Remove button
       $('#settings-panel #remove').click(function() {
-        console.log('Remove clicked');
-        World.selectedNodes.forEach(node => node.delete());
-        World.selectedConnections.forEach(connection => connection.delete(true));
+        self.performDelete();
       });
     }
   },
@@ -307,6 +306,10 @@ let World = {
     pointer.currentHoveredInput = undefined;
     pointer.tempLine = undefined;
     canvas.renderAll();
+  },
+  performDelete() {
+    this.selectedNodes.forEach(node => node.delete());
+    this.selectedConnections.forEach(connection => connection.delete(true));
   }
 }
 
@@ -314,15 +317,23 @@ let World = {
 
 $(function() {
 
-  World.nodes.push(new OscillatorNode(300, 200));
-  World.nodes.push(new OscillatorNode(400, 500));
-  World.nodes.push(new DestinationNode(800, 350));
+  World.nodes.push(new OscillatorNode(200, 200));
+  World.nodes.push(new OscillatorNode(300, 500));
+  World.nodes.push(new GainNode(500, 600));
+  World.nodes.push(new DestinationNode(1000, 350));
 
   // Window Resize event
 
   $(window).resize(function() {
     canvas.setWidth(window.innerWidth);
     canvas.setHeight(window.innerHeight);
+  })
+
+  // Delete key remove handler
+  $(window).keydown(function(e) {
+    if(e.key === 'Delete') {
+      World.performDelete();
+    }
   })
 
   // Selection Clear

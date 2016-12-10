@@ -21,8 +21,10 @@ class Input {
   // IMPORTANT NOTE: synthParamName should have the same name as the respective AudioParam
   //                 in the Node.generateSynthNode().inputs property of the generated
   //                 SynthNodeWrapper.
-  //                 If synthParamName is 'input', then the inputObject's AudioNode input
-  //                 will be the receiving AudioNode itself.
+  //           NOTE: When 'input' is specified as the Input synthParamName, it is up to
+  //                 The Node's implementation to define what 'input' is, but it should
+  //                 be the AudioNode / AudioParam that the outputting AudioNode shall
+  //                 be connected to.
   constructor(o) {
     this.name = o.name;
     this.displayName = o.displayName || o.name;
@@ -119,10 +121,7 @@ class Input {
   }
 
   getReferencingAudioNodes() {
-    if (this.synthParamName === 'input')
-      return this.parentNode.synthNodes.map(audioNode => audioNode.node);
-    else
-      return this.parentNode.synthNodes.map(audioNode => audioNode.inputs[this.synthParamName]);
+    return this.parentNode.synthNodes.map(audioNode => audioNode.inputs[this.synthParamName]);
   }
 
   delete() {
@@ -149,20 +148,13 @@ class Connection {
     console.log('Connecting from ' + outputtingNode.name + ' to ' +
       receivingNode.name + '.' + inputObject.synthParamName);
 
-    let optimisedConnect = inputObject.synthParamName === 'input' ?
+    let optimisedConnect =
                   (oSynthNode, rSynthNode) => {
                     console.log('outputting AudioNode: ');
-                    console.log(oSynthNode.node);
-                    console.log('receiving AudioNode: ');
-                    console.log(rSynthNode.node);
-                    oSynthNode.node.connect(rSynthNode.node);
-                  }
-                : (oSynthNode, rSynthNode) => {
-                    console.log('outputting AudioNode: ');
-                    console.log(oSynthNode.node);
+                    console.log(oSynthNode.outputtingNode);
                     console.log('receiving AudioNode: ');
                     console.log(rSynthNode.inputs[inputObject.synthParamName]);
-                    oSynthNode.node.connect(rSynthNode.inputs[inputObject.synthParamName]);
+                    oSynthNode.outputtingNode.connect(rSynthNode.inputs[inputObject.synthParamName]);
                   };
     if(outputtingNode.isPolyphonic) {
       // Scale receiving node to have the same number of channels
@@ -317,7 +309,7 @@ class Connection {
     let audioParamInputs = this.inputObject.getReferencingAudioNodes();
     for(let outIndex = 0; outIndex < this.outputtingNode.synthNodes.length; outIndex++) {
       for(let inIndex = 0; inIndex < audioParamInputs.length; inIndex++) {
-        this.outputtingNode.synthNodes[outIndex].node.disconnect(audioParamInputs[inIndex]);
+        this.outputtingNode.synthNodes[outIndex].outputtingNode.disconnect(audioParamInputs[inIndex]);
       }
     }
   }

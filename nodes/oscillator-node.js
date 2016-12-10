@@ -59,7 +59,7 @@ class OscillatorNode extends Node {
     }
 
     let placeholderOption = multiple?
-      '<option value="" selected="selected" disabled>&lt;group&gt;</option>':'';
+      '<option value="" selected="selected">&lt;group&gt;</option>':'';
     let placeholder = multiple?'placeholder="<group>"':'';
 
     html += '<section><div>Waveform:</div>' +
@@ -85,13 +85,13 @@ class OscillatorNode extends Node {
   applySingleSelectionEvents() {
     let self = this;
     $('#settings-panel #osc-type').change(function() {
-      let val = $(this).val();
-      self.setType($(this).find(':selected').val());
+      let val = $(this).find(':selected').val();
+      self.setType(val);
     });
     $('#settings-panel #osc-frequency').change(function() {
       let val = $(this).val();
       if(val !== '') {
-        self.setFrequency($(this).val());
+        self.setFrequency(val);
       } else {
         $(this).val(self.paramConstants.frequency);
       }
@@ -99,7 +99,7 @@ class OscillatorNode extends Node {
     $('#settings-panel #osc-detune').change(function() {
       let val = $(this).val();
       if(val !== '') {
-        self.setDetune($(this).val());
+        self.setDetune(val);
       } else {
         $(this).val(self.paramConstants.detune);
       }
@@ -108,11 +108,11 @@ class OscillatorNode extends Node {
 
   applyGroupSelectionEvents() {
     $('#settings-panel #osc-type').change(function() {
-      let val = $(this).val();
+      let val = $(this).find(':selected').val();
       // Empty val is the value attribute of the '<Group>' option
       if(val !== '') {
         World.selectedNodes.forEach(node => {
-          node.setType($(this).find(':selected').val());
+          node.setType(val);
         });
       }
     });
@@ -120,15 +120,15 @@ class OscillatorNode extends Node {
       let val = $(this).val();
       if(val !== '') {
         World.selectedNodes.forEach(node => {
-          node.setFrequency($(this).val());
+          node.setFrequency(val);
         });
       }
     });
     $('#settings-panel #osc-detune').change(function() {
       let val = $(this).val();
-      if(val !=='') {
+      if(val !== '') {
         World.selectedNodes.forEach(node => {
-          node.setDetune($(this).val());
+          node.setDetune(val);
         });
       }
     });
@@ -147,17 +147,17 @@ class OscillatorNode extends Node {
   }
 
   setType(typeStr) {
-    this.synthNodes.forEach(synthNode => synthNode.node.type = typeStr);
+    this.synthNodes.forEach(synthNode => synthNode.outputtingNode.type = typeStr);
     this.paramConstants.type = typeStr;
   }
 
   setFrequency(freq) {
-    this.synthNodes.forEach(synthNode => synthNode.node.frequency.value = freq);
+    this.synthNodes.forEach(synthNode => synthNode.outputtingNode.frequency.value = freq);
     this.paramConstants.frequency = freq;
   }
 
   setDetune(detune) {
-    this.synthNodes.forEach(synthNode => synthNode.node.detune.value = detune);
+    this.synthNodes.forEach(synthNode => synthNode.outputtingNode.detune.value = detune);
     this.paramConstants.detune = detune;
   }
 }

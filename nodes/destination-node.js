@@ -46,6 +46,8 @@ class DestinationNode extends Node {
 
   generateSynthNode() {
     let dest = audioCtx.destination;
-    return new SynthNodeWrapper(dest, {});
+    return new SynthNodeWrapper(dest, {
+      input: dest
+    });
   }
 }

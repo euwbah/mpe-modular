@@ -11,14 +11,14 @@
 
 class SynthNodeWrapper {
   // A wrapper for the WebAudioAPI synth node
-  constructor(node, inputs) {
-    this.node = node;
+  constructor(outputtingNode, inputs) {
+    this.outputtingNode = outputtingNode;
     this.inputs = inputs;
   }
 
   dispose() {
-    this.node.disconnect();
-    this.node = undefined;
+    this.outputtingNode.disconnect();
+    this.outputtingNode = undefined;
     this.inputs = undefined;
   }
 }

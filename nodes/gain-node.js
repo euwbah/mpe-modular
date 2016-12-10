@@ -54,12 +54,12 @@ class GainNode extends Node {
 
     html += '<section><div>Gain Mult.</div>' +
             '<div><input type="number" id="gain-gain" ' + placeholder +
-            'value="' + (multiple?'':this.paramConstants.frequency) + '">' +
+            'value="' + (multiple?'':this.paramConstants.gain) + '">' +
             '</div></section>' +
 
             '<section><div>Offset</div>' +
             '<div><input type="number" id="gain-offset" ' + placeholder +
-            'value="' + (multiple?'':this.paramConstants.detune) + '">' +
+            'value="' + (multiple?'':this.paramConstants.offset) + '">' +
             '</div></section>';
     return html;
   }
@@ -67,47 +67,38 @@ class GainNode extends Node {
   applySingleSelectionEvents() {
     let self = this;
 
-    $('#settings-panel #osc-frequency').change(function() {
+    $('#settings-panel #gain-gain').change(function() {
       let val = $(this).val();
       if(val !== '') {
-        self.setFrequency($(this).val());
+        self.setGain(val);
       } else {
-        $(this).val(self.paramConstants.frequency);
+        $(this).val(self.paramConstants.gain);
       }
     });
-    $('#settings-panel #osc-detune').change(function() {
+    $('#settings-panel #gain-offset').change(function() {
       let val = $(this).val();
       if(val !== '') {
-        self.setDetune($(this).val());
+        self.setOffset(val);
       } else {
-        $(this).val(self.paramConstants.detune);
+        $(this).val(self.paramConstants.offset);
       }
     });
   }
 
   applyGroupSelectionEvents() {
-    $('#settings-panel #osc-type').change(function() {
-      let val = $(this).val();
-      // Empty val is the value attribute of the '<Group>' option
-      if(val !== '') {
-        World.selectedNodes.forEach(node => {
-          node.setType($(this).find(':selected').val());
-        });
-      }
-    });
-    $('#settings-panel #osc-frequency').change(function() {
+    $('#settings-panel #gain-gain').change(function() {
       let val = $(this).val();
       if(val !== '') {
         World.selectedNodes.forEach(node => {
-          node.setFrequency($(this).val());
+          node.setGain(val);
         });
       }
     });
-    $('#settings-panel #osc-detune').change(function() {
+    $('#settings-panel #gain-offset').change(function() {
       let val = $(this).val();
-      if(val !=='') {
+      if(val !== '') {
         World.selectedNodes.forEach(node => {
-          node.setDetune($(this).val());
+          node.setOffset(val);
         });
       }
     });
@@ -119,23 +110,31 @@ class GainNode extends Node {
 
     let constantSource = audioCtx.createConstantSource();
     constantSource.offset.value = this.paramConstants.offset;
-    gain.connect(constantSource);
 
-    return new SynthNodeWrapper(constantSource, {
+    // This just intends to add the two nodes together.
+    let out = audioCtx.createGain();
+    out.gain.value = 1;
+    gain.connect(out);
+    constantSource.connect(out);
+
+    return new SynthNodeWrapper(out, {
+      input: gain,
       gain: gain.gain,
+
       // NOTE: offset is not actually an input because it's unecessary,
       //       but a pointer is stored for assignment purposes.
-      offset: constantSource.offset
+      offset: constantSource.offset,
     });
   }
 
   setGain(gain) {
-    this.synthNodes.forEach(synthNode => synthNode.inputs.gain.gain.value = gain);
+    console.log(this.synthNodes);
+    this.synthNodes.forEach(synthNode => synthNode.inputs.gain.value = gain);
     this.paramConstants.gain = gain;
   }
 
   setOffset(offset) {
-    this.synthNodes.forEach(synthNode => synthNode.node.offset.value = offset);
+    this.synthNodes.forEach(synthNode => synthNode.inputs.offset.value = offset);
     this.paramConstants.offset = offset;
   }
 }
