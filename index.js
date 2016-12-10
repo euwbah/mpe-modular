@@ -252,7 +252,7 @@ let World = {
       $('#settings-panel #remove').click(function() {
         console.log('Remove clicked');
         World.selectedNodes.forEach(node => node.delete());
-        World.selectedConnections.forEach(connection => connection.delete());
+        World.selectedConnections.forEach(connection => connection.delete(true));
       });
     }
   },

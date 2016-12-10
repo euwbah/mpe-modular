@@ -146,12 +146,22 @@ class Connection {
     let receivingNode = inputObject.parentNode;
 
     this.drawAndUpdateLine(inputObject, outputtingNode);
+    console.log('Connecting from ' + outputtingNode.name + ' to ' +
+      receivingNode.name + '.' + inputObject.synthParamName);
 
     let optimisedConnect = inputObject.synthParamName === 'input' ?
                   (oSynthNode, rSynthNode) => {
+                    console.log('outputting AudioNode: ');
+                    console.log(oSynthNode.node);
+                    console.log('receiving AudioNode: ');
+                    console.log(rSynthNode.node);
                     oSynthNode.node.connect(rSynthNode.node);
                   }
                 : (oSynthNode, rSynthNode) => {
+                    console.log('outputting AudioNode: ');
+                    console.log(oSynthNode.node);
+                    console.log('receiving AudioNode: ');
+                    console.log(rSynthNode.inputs[inputObject.synthParamName]);
                     oSynthNode.node.connect(rSynthNode.inputs[inputObject.synthParamName]);
                   };
     if(outputtingNode.isPolyphonic) {
