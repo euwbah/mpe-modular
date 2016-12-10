@@ -4,3 +4,7 @@ Array.prototype.removeObject = function(obj) {
     this.splice(index, 1);
   }
 }
+
+Array.prototype.containsObject = function(obj) {
+  return this.filter(item => item === obj).length !== 0;
+}

@@ -9,6 +9,7 @@ class SynthNodeWrapper {
   }
 
   dispose() {
+    this.node.disconnect();
     this.node = undefined;
     this.inputs = undefined;
   }
@@ -109,10 +110,17 @@ class Node {
     }
   }
 
-  dispose() {
-    this.displayGroup.remove();
+  delete() {
+    canvas.remove(this.displayGroup);
+    this.inputs.forEach(input => input.delete());
+    // Can't use a forEach here, since array mutation is happening.
+    while(this.outputConnections.length !== 0)
+      this.outputConnections[0].delete(true);
+    
     this.synthNodes.forEach(sn => sn.dispose());
     this.synthNodes = [];
+    World.selectedNodes.removeObject(this);
+    World.nodes.removeObject(this);
   }
 
   doubleClick() {
@@ -157,13 +165,14 @@ class Node {
 
   // This whole thing is necessary as Inputs are connected directly to canvas, and
   // not the group. (Because FabricJS doesn't fully support per-object events).
-  updatePositions(groupObject) {
+  updatePositions(groupObject, dontUpdateConnections) {
     let left = this.displayGroup.getLeft();
     let top = this.displayGroup.getTop();
 
     this.inputs.forEach(input => input.updatePositions(left, top, groupObject));
-    this.outputConnections.forEach(connection =>
-      connection.drawAndUpdateLine(connection.inputObject, this, groupObject));
+    if (!dontUpdateConnections)
+      this.outputConnections.forEach(connection =>
+        connection.drawAndUpdateLine(connection.inputObject, this, groupObject));
   }
 
   updateBoundingBox() {

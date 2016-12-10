@@ -117,6 +117,18 @@ class Input {
 
     outputtingNode.outputConnections.push(connection);
   }
+
+  getReferencingAudioNodes() {
+    if (this.synthParamName === 'input')
+      return this.parentNode.synthNodes.map(audioNode => audioNode.node);
+    else
+      return this.parentNode.synthNodes.map(audioNode => audioNode.inputs[this.synthParamName]);
+  }
+
+  delete() {
+    canvas.remove(this.connectableText);
+    this.connections.forEach(connection => connection.delete(true));
+  }
 }
 
 class Connection {
@@ -282,8 +294,22 @@ class Connection {
     canvas.renderAll();
   }
 
-  disconnect() {
+  delete(mutate) {
+    console.log('Deleting Input from ' + this.outputtingNode.name + ' to ' + this.inputObject.name);
+    canvas.remove(this.line);
+    if (mutate) {
+      this.outputtingNode.outputConnections.removeObject(this);
+      this.inputObject.connections.removeObject(this);
+    }
 
+    // Disconnect the input audioParam from the outputtingNode
+    // (This method will ensure that only the connection that needs to be deleted will be deleted)
+    let audioParamInputs = this.inputObject.getReferencingAudioNodes();
+    for(let outIndex = 0; outIndex < this.outputtingNode.synthNodes.length; outIndex++) {
+      for(let inIndex = 0; inIndex < audioParamInputs.length; inIndex++) {
+        this.outputtingNode.synthNodes[outIndex].node.disconnect(audioParamInputs[inIndex]);
+      }
+    }
   }
 
   select() {

@@ -247,6 +247,13 @@ let World = {
         settingsPanelDynamic.html('');
         settingsPanelDynamic.append();
       }
+
+      // Remove button
+      $('#settings-panel #remove').click(function() {
+        console.log('Remove clicked');
+        World.selectedNodes.forEach(node => node.delete());
+        World.selectedConnections.forEach(connection => connection.delete());
+      });
     }
   },
   checkSelectedNodesAreSameType: function() {
@@ -318,11 +325,6 @@ $(function() {
     canvas.setHeight(window.innerHeight);
   })
 
-  // Remove button
-  $('#remove').click(function() {
-
-  });
-
   // Selection Clear
   canvas.on('before:selection:cleared', function(e) {
     World.nodes.forEach(node => node.deselect());
@@ -363,16 +365,19 @@ $(function() {
 
     if(activeGroup) {
       let selectedObjects = activeGroup.getObjects();
+      let connectedNodes = [];
       // Remove all selected connections during moving
       selectedObjects.forEach(displayObject => {
         if (displayObject.connection) {
+          connectedNodes.push(displayObject.connection.outputtingNode);
           activeGroup.removeWithUpdate(displayObject);
         }
       });
       selectedObjects = activeGroup.getObjects();
       selectedObjects.forEach(displayObject => {
         if (displayObject.synthNode)
-          displayObject.synthNode.updatePositions(activeGroup);
+          displayObject.synthNode.updatePositions(activeGroup,
+            connectedNodes.containsObject(displayObject.synthNode));
       });
     }
   });
