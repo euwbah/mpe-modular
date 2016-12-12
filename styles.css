@@ -82,6 +82,9 @@ canvas {
   left: 80vw;
   top: 0;
   position: absolute;
+
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 #settings-panel h1 {
@@ -91,9 +94,11 @@ canvas {
 }
 
 #settings-panel h2 {
+  margin: 0 1rem;
   font-size: 1rem;
   font-weight: 100;
   color: rgb(232, 232, 232);
+  text-align: right;
 }
 
 #settings-panel div {
@@ -175,4 +180,14 @@ canvas {
   width: 14ch;
   max-width: calc(20vw - 2rem);
   text-align: center;
+}
+
+#selector {
+  text-align: center;
+}
+
+.spawn {
+  width: auto;
+  display: inline-block;
+  margin: 2rem 0 0 0;
 }

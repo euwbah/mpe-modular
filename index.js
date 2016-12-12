@@ -102,6 +102,13 @@ canvas.on('mouse:move', function(options) {
     pointer.tempLine.set('x2', p.x).set('y2', p.y);
     canvas.renderAll();
   }
+  if (World.currentSpawning) {
+    console.log('current spawning');
+    World.currentSpawning.displayGroup.setLeft(p.x);
+    World.currentSpawning.displayGroup.setTop(p.y);
+    World.currentSpawning.updatePositions();
+    canvas.renderAll();
+  }
 
   pointer.x = p.x;
   pointer.y = p.y;
@@ -117,6 +124,10 @@ canvas.on('mouse:down', function(e) {
 
   if(pointer.connectingFrom) {
     World.finalizeConnection();
+  }
+  if(World.currentSpawning) {
+    World.currentSpawning.updateBoundingBox();
+    World.currentSpawning = undefined;
   }
 
   if(!(activeObject || activeGroup) && !keyboard.isShiftDown) {
@@ -168,9 +179,11 @@ let settingsPanelDefault = $('#settings-panel #default');
 let settingsPanelDynamic = $('#settings-panel #dynamic');
 
 let World = {
+  outputNode: new DestinationNode(500, 500),
   nodes: [],
   selectedNodes: [],
   selectedConnections: [],
+  currentSpawning: undefined,
   doSelectionUpdate: function() {
     if (this.selectedNodes.length === 0 && this.selectedConnections.length === 0) {
       settingsPanelDefault.show();
@@ -310,17 +323,16 @@ let World = {
   performDelete() {
     this.selectedNodes.forEach(node => node.delete());
     this.selectedConnections.forEach(connection => connection.delete(true));
+  },
+  spawn(node) {
+    this.currentSpawning = node;
+    this.nodes.push(node);
   }
 }
 
 // XXX XXX MAIN
 
 $(function() {
-
-  World.nodes.push(new OscillatorNode(200, 200));
-  World.nodes.push(new OscillatorNode(300, 500));
-  World.nodes.push(new GainNode(500, 600));
-  World.nodes.push(new DestinationNode(1000, 350));
 
   // Window Resize event
 
@@ -404,4 +416,7 @@ $(function() {
     }
   });
 
+  $('.spawn').click(function() {
+    instantiate($(this).attr('id'));
+  });
 });

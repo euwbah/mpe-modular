@@ -72,12 +72,14 @@ class OscillatorNode extends Node {
 
             '<section><div>Frequency (Hz)</div>' +
             '<div><input type="number" id="osc-frequency" ' + placeholder +
-            'value="' + (multiple?'':this.paramConstants.frequency) + '">' +
+            'value="' + (multiple?'':this.paramConstants.frequency) +
+            '" min="0" step="any">' +
             '</div></section>' +
 
             '<section><div>Detune (Cents)</div>' +
             '<div><input type="number" id="osc-detune" ' + placeholder +
-            'value="' + (multiple?'':this.paramConstants.detune) + '">' +
+            'value="' + (multiple?'':this.paramConstants.detune) +
+            '" step="any">' +
             '</div></section>';
     return html;
   }

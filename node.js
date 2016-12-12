@@ -120,16 +120,18 @@ class Node {
   }
 
   delete() {
-    canvas.remove(this.displayGroup);
-    this.inputs.forEach(input => input.delete());
-    // Can't use a forEach here, since array mutation is happening.
-    while(this.outputConnections.length !== 0)
-      this.outputConnections[0].delete(true);
+    if(this.type !== 'Destination') {
+      canvas.remove(this.displayGroup);
+      this.inputs.forEach(input => input.delete());
+      // Can't use a forEach here, since array mutation is happening.
+      while(this.outputConnections.length !== 0)
+        this.outputConnections[0].delete(true);
 
-    this.synthNodes.forEach(sn => sn.dispose());
-    this.synthNodes = [];
-    World.selectedNodes.removeObject(this);
-    World.nodes.removeObject(this);
+      this.synthNodes.forEach(sn => sn.dispose());
+      this.synthNodes = [];
+      World.selectedNodes.removeObject(this);
+      World.nodes.removeObject(this);
+    }
   }
 
   doubleClick() {
@@ -150,7 +152,8 @@ class Node {
   }
 
   generateOptionsHTML() {
-    return '<section class="center"><button id="remove">remove</button></section>';
+    return this.type !== 'Destination' ?
+            '<section class="center"><button id="remove">remove</button></section>' : '';
   }
 
   scaleSynthNodes(numberOfMPEChannels) {

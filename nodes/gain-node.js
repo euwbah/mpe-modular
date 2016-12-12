@@ -54,12 +54,14 @@ class GainNode extends Node {
 
     html += '<section><div>Gain Mult.</div>' +
             '<div><input type="number" id="gain-gain" ' + placeholder +
-            'value="' + (multiple?'':this.paramConstants.gain) + '">' +
+            'value="' + (multiple?'':this.paramConstants.gain) +
+            '"step="any">' +
             '</div></section>' +
 
             '<section><div>Offset</div>' +
             '<div><input type="number" id="gain-offset" ' + placeholder +
-            'value="' + (multiple?'':this.paramConstants.offset) + '">' +
+            'value="' + (multiple?'':this.paramConstants.offset) +
+            '" step="any">' +
             '</div></section>';
     return html;
   }
