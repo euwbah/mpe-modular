@@ -120,7 +120,7 @@ class Node {
   }
 
   delete() {
-    if(this.type !== 'Destination') {
+    if(this.type !== 'Destination' && this.type !== 'Scope') {
       canvas.remove(this.displayGroup);
       this.inputs.forEach(input => input.delete());
       // Can't use a forEach here, since array mutation is happening.
@@ -189,6 +189,7 @@ class Node {
 
   updateBoundingBox() {
     // moving completed
+    this.displayGroup.setCoords();
     this.inputs.forEach(input => input.updateBoundingBox());
     this.outputConnections.forEach(connection => connection.updateBoundingBox());
   }

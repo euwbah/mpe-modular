@@ -24,7 +24,12 @@
         </section>
         <section id="selector">
           <button class="spawn" id="oscillator">oscillator</button>
+          <button class="spawn" id="noise">noise</button>
           <button class="spawn" id="gain">gain</button>
+          <button class="spawn" id="filter">filter</button>
+          <button class="spawn" id="compressor">compressor</button>
+          <button class="spawn" id="key-gate">key gate</button>
+          <button class="spawn" id="envelope">envelope</button>
         </section>
       </div>
       <div id="dynamic">
@@ -35,7 +40,10 @@
     <div id="fullscreen-wrapper">
       <div id="fullscreen"></div>
     </div>
-    <div id="oscilloscope"></div>
+    <div id="oscilloscope" class="scope"></div>
+    <div id="oscilloscope-global" class="scope"></div>
+    <div id="scope-info" class="scope-info"></div>
+    <div id="global-scope-info" class="scope-info"></div>
 
     <script src="custom.js"></script>
     <script src="bower_components/fabric.js/dist/fabric.min.js"></script>
@@ -45,9 +53,15 @@
     <script src="connections.js"></script>
     <script src="node.js"></script>
 
-    <script src="nodes/oscillator-node.js"></script>
-    <script src="nodes/gain-node.js"></script>
-    <script src="nodes/destination-node.js"></script>
+    <script src="nodes/oscillator.js"></script>
+    <script src="nodes/noise.js"></script>
+    <script src="nodes/gain.js"></script>
+    <script src="nodes/filter.js"></script>
+    <script src="nodes/compressor.js"></script>
+    <script src="nodes/key-gate.js"></script>
+    <script src="nodes/envelope.js"></script>
+    <script src="nodes/scope.js"></script>
+    <script src="nodes/destination.js"></script>
 
     <script src="spawner.js"></script>
     <script src="index.js"></script>

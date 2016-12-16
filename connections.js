@@ -75,22 +75,7 @@ class Input {
   }
 
   updateBoundingBox() {
-    canvas.remove(this.connectableText);
-
-    this.connectableText = new fabric.Text(this.displayName, {
-      fontFamily: this.connectableText.fontFamily,
-      fontSize: this.connectableText.fontSize,
-      fontWeight: this.connectableText.fontWeight,
-      fill: this.connectableText.fill,
-      left: this.connectableText.left,
-      top: this.connectableText.top,
-      selectable: this.connectableText.selectable
-    });
-
-    this.connectableText.inputParent = this;
-
-    canvas.add(this.connectableText);
-    canvas.bringToFront(this.connectableText);
+    this.connectableText.setCoords();
 
     this.connections.forEach(connection => connection.updateBoundingBox());
   }
@@ -126,7 +111,8 @@ class Input {
 
   delete() {
     canvas.remove(this.connectableText);
-    this.connections.forEach(connection => connection.delete(true));
+    while (this.connections.length !== 0)
+      this.connections[0].delete(true);
   }
 }
 
@@ -145,15 +131,9 @@ class Connection {
     let receivingNode = inputObject.parentNode;
 
     this.drawAndUpdateLine(inputObject, outputtingNode);
-    console.log('Connecting from ' + outputtingNode.name + ' to ' +
-      receivingNode.name + '.' + inputObject.synthParamName);
 
     let optimisedConnect =
                   (oSynthNode, rSynthNode) => {
-                    console.log('outputting AudioNode: ');
-                    console.log(oSynthNode.outputtingNode);
-                    console.log('receiving AudioNode: ');
-                    console.log(rSynthNode.inputs[inputObject.synthParamName]);
                     oSynthNode.outputtingNode.connect(rSynthNode.inputs[inputObject.synthParamName]);
                   };
     if(outputtingNode.isPolyphonic) {
@@ -261,43 +241,10 @@ class Connection {
   }
 
   updateBoundingBox() {
-    let self = this;
-
-    if (this.line) {
-      canvas.remove(this.line);
-    }
-    this.line = new fabric.Line([
-      this.line.x1,
-      this.line.y1,
-      this.line.x2,
-      this.line.y2
-    ], {
-      stroke: this.line.stroke,
-      strokeWidth: this.line.strokeWidth,
-      hasBorders: this.line.hasBorders,
-      angle: this.line.angle,
-      lockMovementX: true,
-      lockMovementY: true
-    });
-
-    this.line.connection = this;
-
-    this.line.on('selected', function() {
-      self.select();
-      World.selectedConnections.forEach(con => con.deselect());
-      World.selectedConnections = [self];
-      World.selectedNodes.forEach(node => node.deselect());
-      World.selectedNodes = [];
-      World.doSelectionUpdate();
-    });
-
-    canvas.add(this.line);
-    canvas.sendToBack(this.line);
-    canvas.renderAll();
+    this.line.setCoords();
   }
 
   delete(mutate) {
-    console.log('Deleting Input from ' + this.outputtingNode.name + ' to ' + this.inputObject.name);
     canvas.remove(this.line);
     if (mutate) {
       this.outputtingNode.outputConnections.removeObject(this);

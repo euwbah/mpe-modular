@@ -34,7 +34,7 @@ var WavyJones = function (context, elem) {
 
     for (var i = 0; i < freqData.length; i++) {
       if (i % noDataPoints) {
-        var point = (freqData[i] / 128) * (analyser.height / 2);
+        var point = analyser.height - (freqData[i] / 128) * (analyser.height / 2);
         graphPoints.push('L' + i + ', ' + point);
       }
     }

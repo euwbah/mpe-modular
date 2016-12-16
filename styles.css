@@ -49,7 +49,7 @@ body {
   pointer-events: none;
 }
 
-#oscilloscope {
+.scope {
   margin: 0;
   padding: 0;
   top: 0;
@@ -59,7 +59,26 @@ body {
   display: block;
   position: absolute;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.6;
+}
+
+.scope-info {
+  font-weight: 100;
+  font-size: 0.9rem;
+  color: rgb(242, 231, 231);
+  margin: 0;
+  padding: 0;
+  top: 4rem;
+  left: 4rem;
+  width: auto;
+  height: auto;
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+#global-scope-info {
+  top: 5.5rem;
 }
 
 canvas {
@@ -83,8 +102,8 @@ canvas {
   top: 0;
   position: absolute;
 
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #settings-panel h1 {
@@ -149,6 +168,10 @@ canvas {
   background-color: rgb(24, 37, 75) !important;
 }
 
+#settings-panel input:disabled {
+  opacity: 0.5;
+}
+
 #settings-panel button {
   padding: 0.3rem;
   min-width: 8rem;
@@ -187,7 +210,8 @@ canvas {
 }
 
 .spawn {
+  font-weight: 100;
   width: auto;
   display: inline-block;
-  margin: 2rem 0 0 0;
+  margin: 1rem 0 0 0;
 }

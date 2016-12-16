@@ -1,7 +1,7 @@
 class GainNode extends Node {
 
   constructor(x, y) {
-    super(x, y, 'rgba(255, 188, 74, 0.75)', 'rgb(255, 209, 107)', 'AMP', 'Gain');
+    super(x, y, 'rgba(222, 125, 35, 0.75)', 'rgb(255, 209, 107)', 'AMP', 'Gain');
 
     let self = this;
 
@@ -47,7 +47,6 @@ class GainNode extends Node {
   // Multiple will be set to true if the changes made here have to affect all instances of
   // selected synth nodes
   generateOptionsHTML(multiple) {
-    let self = this;
     let html = super.generateOptionsHTML();
 
     let placeholder = multiple ? 'placeholder="<group>"' : '';
@@ -112,14 +111,10 @@ class GainNode extends Node {
 
     let constantSource = audioCtx.createConstantSource();
     constantSource.offset.value = this.paramConstants.offset;
+    gain.connect(constantSource.offset);
+    constantSource.start();
 
-    // This just intends to add the two nodes together.
-    let out = audioCtx.createGain();
-    out.gain.value = 1;
-    gain.connect(out);
-    constantSource.connect(out);
-
-    return new SynthNodeWrapper(out, {
+    return new SynthNodeWrapper(constantSource, {
       input: gain,
       gain: gain.gain,
 
@@ -130,7 +125,6 @@ class GainNode extends Node {
   }
 
   setGain(gain) {
-    console.log(this.synthNodes);
     this.synthNodes.forEach(synthNode => synthNode.inputs.gain.value = gain);
     this.paramConstants.gain = gain;
   }

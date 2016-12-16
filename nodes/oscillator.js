@@ -73,7 +73,7 @@ class OscillatorNode extends Node {
             '<section><div>Frequency (Hz)</div>' +
             '<div><input type="number" id="osc-frequency" ' + placeholder +
             'value="' + (multiple?'':this.paramConstants.frequency) +
-            '" min="0" step="any">' +
+            '" step="any">' +
             '</div></section>' +
 
             '<section><div>Detune (Cents)</div>' +

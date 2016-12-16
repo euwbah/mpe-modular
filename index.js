@@ -21,9 +21,43 @@ fabric.Object.prototype.hasRotatingPoint = false;
 canvas.setWidth(window.innerWidth);
 canvas.setHeight(window.innerHeight);
 
-var oscilloscope = new WavyJones(audioCtx, 'oscilloscope');
-oscilloscope.lineColor = 'rgb(89, 255, 0)';
-oscilloscope.lineThickness = 3;
+// NOTE: Global Oscilloscope is for debug
+
+let oscilloscope = audioCtx.createGain();
+
+let globalScope = new WavyJones(audioCtx, 'oscilloscope-global');
+globalScope.lineColor = 'rgb(57, 172, 255)';
+globalScope.lineThickness = 3;
+
+oscilloscope.connect(globalScope);
+
+let globalPeakMeter = audioCtx.createScriptProcessor(16384, 1, 0);
+
+{
+  let repCount = 0;
+  let highestSoFar = 0;
+  let globalScopeInfo = $('#global-scope-info');
+
+  globalPeakMeter.onaudioprocess = function(audioProcessingEvent) {
+    let inputBuffer = audioProcessingEvent.inputBuffer;
+    let inputData = inputBuffer.getChannelData(0)
+    for(let sample = 0; sample < 16384; sample++) {
+      let val = Math.abs(inputData[sample]);
+      if (val > highestSoFar)
+        highestSoFar = val;
+    }
+
+    repCount++;
+
+    if (repCount === 2) {
+      globalScopeInfo.text('peak level (debug): ' + highestSoFar);
+      highestSoFar = 0;
+      repCount = 0;
+    }
+  }
+}
+
+oscilloscope.connect(globalPeakMeter);
 
 // Global Mouyse & Keyboard events
 
@@ -103,7 +137,6 @@ canvas.on('mouse:move', function(options) {
     canvas.renderAll();
   }
   if (World.currentSpawning) {
-    console.log('current spawning');
     World.currentSpawning.displayGroup.setLeft(p.x);
     World.currentSpawning.displayGroup.setTop(p.y);
     World.currentSpawning.updatePositions();
@@ -126,7 +159,10 @@ canvas.on('mouse:down', function(e) {
     World.finalizeConnection();
   }
   if(World.currentSpawning) {
+    World.currentSpawning.updatePositions();
     World.currentSpawning.updateBoundingBox();
+    canvas.renderAll();
+    canvas.deactivateAll().setActiveObject(World.currentSpawning.displayGroup);
     World.currentSpawning = undefined;
   }
 
@@ -170,7 +206,7 @@ document.addEventListener('wheel', function(e) {
     let scrollAmt = - e.deltaY * 0.02 + 1;
     let zoomLvl = canvas.getZoom();
     if (zoomLvl * scrollAmt > 0.3 && zoomLvl * scrollAmt < 2) {
-      canvas.zoomToPoint(new fabric.Point(pointer.x, pointer.y), zoomLvl * scrollAmt);
+      canvas.zoomToPoint(new fabric.Point(pointer.clientX, pointer.clientY), zoomLvl * scrollAmt);
     }
   }
 });
@@ -180,10 +216,13 @@ let settingsPanelDynamic = $('#settings-panel #dynamic');
 
 let World = {
   outputNode: new DestinationNode(500, 500),
+  scopeNode: new ScopeNode(1200, 500),
   nodes: [],
   selectedNodes: [],
   selectedConnections: [],
   currentSpawning: undefined,
+
+  keybindings: {},
   doSelectionUpdate: function() {
     if (this.selectedNodes.length === 0 && this.selectedConnections.length === 0) {
       settingsPanelDefault.show();
@@ -321,8 +360,13 @@ let World = {
     canvas.renderAll();
   },
   performDelete() {
-    this.selectedNodes.forEach(node => node.delete());
-    this.selectedConnections.forEach(connection => connection.delete(true));
+    while(this.selectedNodes.length !== 0) {
+      this.selectedNodes.shift().delete();
+    }
+    while(this.selectedConnections.length !== 0) {
+      this.selectedConnections.shift().delete(true);
+    }
+    canvas.deactivateAll().renderAll();
   },
   spawn(node) {
     this.currentSpawning = node;
@@ -414,6 +458,19 @@ $(function() {
           displayObject.synthNode.updateBoundingBox();
       });
     }
+  });
+
+  // Make the canvas container receive key press events
+  $('.canvas-container')[0].tabIndex = 1000;
+
+  $('.canvas-container').
+  keypress(function(e) {
+    if(World.keybindings[e.key])
+      World.keybindings[e.key].forEach(keyGateNode => keyGateNode.gateOn());
+  }).
+  keyup(function(e) {
+    if(World.keybindings[e.key])
+      World.keybindings[e.key].forEach(keyGateNode => keyGateNode.gateOff());
   });
 
   $('.spawn').click(function() {
